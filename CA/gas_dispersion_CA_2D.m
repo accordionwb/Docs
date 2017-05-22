@@ -52,8 +52,11 @@ New_C(ii,jj)=C(ii,jj)+wc(1)*(ud(1)*(C(ii,jj-1)-C(ii,jj))+ud(2)*(C(ii,jj+1)-C(ii,
     delta(ii,jj).*C(ii,jj)-lambda(ii,jj).*C(ii,jj);
 % Results(step).C=New_C;
 C=New_C;
+
+hold on
 drawnow 
-contour(New_C')
+[CTR,h]=contour(New_C');
+delete(h);
 title(['Time: ',num2str(t),' s']);
 % pause(1);
 end
