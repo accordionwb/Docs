@@ -17,7 +17,8 @@ type='line';
 [cells,init_state]=fun_init_cells(XX,YY,N,type);
 
 % 3. INitialize Image
-im = image(cat(3,cells',cells',cells'));
+% % im = image(cat(3,cells',cells',cells'));
+im = image(cells');
 % im = image(cells,'AlphaDataMapping','none');
 axis equal
 axis tight
