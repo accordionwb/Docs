@@ -1,10 +1,11 @@
 %% Parameters 
-parameter.IJ=[700,500];  %x,y,z Demisions
-I=parameter.IJ(1);
-J=parameter.IJ(2);
+I=700;
+J=300;
+parameter.IJ=[I,J];  %x,y,z Demisions
+
 % wind direction based cofficient: | south | north | east | west | SE | NW | NE | SW
-parameter.U=0.5; %m/s wind speed
-parameter.theta=deg2rad(225); % degree, positive wind speed value point to center
+parameter.U=3; %m/s wind speed
+parameter.theta=deg2rad(280); % degree, positive wind speed value point to center
 % Dispersion coefficient
 parameter.Kz=ones(2,1); % vertical turbulence coefficient kz', kz''
 parameter.Kx=1e-3;  % horizental dispersion coefficient on x axis
@@ -19,12 +20,18 @@ parameter.wc=ones(2,1); % main weight cofficient wa, wb
 parameter.Dt=0.01;  % time step
 parameter.Dspace=0.1;  % space step
 % control variables
-parameter.dispersion=1;  % or 1
+parameter.dispersion=0;  % 0 or 1
 % Initial and Source conditions
 C=zeros(I,J); % Array initialization
 S=zeros(I,J);  % Source Character
-S(355:360,255:260)=10*ones(6,6);
+S(155:160,155:160)=10*ones(6,6);
 parameter.Source=S; %source 
+% Obstacle defination
+Obstcfg=[400,450,200,240;
+         200,250,130,155];
+parameter.Obstcfg=Obstcfg;
+Obst=fun_obstcode_2D(parameter);
+
 
 %% Loop settings
 % Time and space step
@@ -49,7 +56,7 @@ else
     while t<T
         t=t+parameter.Dt;
         step=step+1;
-        New_C=fun_rule2D(C,parameter);
+        New_C=fun_rule2D_loop(C,Obst,parameter);
         %%% Without Dispersion
         
         % Results(step).C=New_C;
