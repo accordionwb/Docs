@@ -1,7 +1,7 @@
 %% Parameters 
 I=700;
 J=300;
-parameter.IJ=[I,J];  %x,y,z Demisions
+parameter.IJ=[I,J,K];  %x,y,z Demisions
 
 % wind direction based cofficient: | south | north | east | west | SE | NW | NE | SW
 parameter.U=3; %m/s wind speed
@@ -12,8 +12,8 @@ parameter.Kx=1e-3;  % horizental dispersion coefficient on x axis
 parameter.Ky=1e-3;
 parameter.Kxy=1e-3;
 % Reaction and deposition
-parameter.delta=zeros(I,J);   % deposition
-parameter.lambda=zeros(I,J);  % reaction
+parameter.delta=zeros(I,J,K);   % deposition
+parameter.lambda=zeros(I,J,K);  % reaction
 % Adjoint coefficient
 parameter.wc=ones(2,1); % main weight cofficient wa, wb
 % Time and space division
@@ -22,8 +22,8 @@ parameter.Dspace=0.1;  % space step
 % control variables
 parameter.dispersion=0;  % 0 or 1
 % Initial and Source conditions
-C=zeros(I,J); % Array initialization
-S=zeros(I,J);  % Source Character
+C=zeros(I,J,K); % Array initialization
+S=zeros(I,J,K);  % Source Character
 S(155:160,155:160)=10*ones(6,6);
 parameter.Source=S; %source 
 % Obstacle defination

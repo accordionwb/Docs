@@ -5,7 +5,7 @@ parameter.IJ=[I,J];  %x,y,z Demisions
 
 % wind direction based cofficient: | south | north | east | west | SE | NW | NE | SW
 parameter.U=3; %m/s wind speed
-parameter.theta=deg2rad(280); % degree, positive wind speed value point to center
+parameter.theta=deg2rad(260); % degree, positive wind speed value point to center
 % Dispersion coefficient
 parameter.Kz=ones(2,1); % vertical turbulence coefficient kz', kz''
 parameter.Kx=1e-3;  % horizental dispersion coefficient on x axis
@@ -31,8 +31,12 @@ Obstcfg=[400,450,200,240;
          200,250,130,155];
 parameter.Obstcfg=Obstcfg;
 Obst=fun_obstcode_2D(parameter);
+X_Corner=Obstcfg(:,1);
+Y_Corner=Obstcfg(:,3);
+X_length=Obstcfg(:,2)-Obstcfg(:,1);
+Y_length=Obstcfg(:,4)-Obstcfg(:,3);
 
-
+isOBST=0;
 %% Loop settings
 % Time and space step
 T=10; % time end. (start from t=0)
@@ -56,7 +60,8 @@ else
     while t<T
         t=t+parameter.Dt;
         step=step+1;
-        New_C=fun_rule2D_loop(C,Obst,parameter);
+%         New_C=fun_rule2D_loop(C,Obst,parameter);
+        New_C=fun_rule2D(C,parameter);
         %%% Without Dispersion
         
         % Results(step).C=New_C;
@@ -70,7 +75,7 @@ else
 
             im = image(C','CDataMapping','scaled');
 %             colorbar
-            colormap(jet);
+            colormap(hsv);
             ax = gca;
             ax.YDir='normal';
             
@@ -79,9 +84,16 @@ else
             [CTR,obj] = contour(C',v);
             obj.ShowText='on';            
             title(['Time: ',num2str(t),' s']);
-            
+            if isOBST==1
+                
+            for i= 1:length(X_Corner)
+            rectangle('Position',[X_Corner(i),Y_Corner(i),X_length(i),Y_length(i)], 'FaceColor','cyan')
+            end
+            end
             hold off
         end
         % pause(1);
     end
 end
+ylabel('Y (m)','FontSize',fontsize)
+xlabel('X (m)','FontSize',fontsize)
