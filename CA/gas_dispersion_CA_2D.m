@@ -75,7 +75,7 @@ else
 
             im = image(C','CDataMapping','scaled');
 %             colorbar
-            colormap(hsv);
+            colormap(jet);
             ax = gca;
             ax.YDir='normal';
             
@@ -95,5 +95,5 @@ else
         % pause(1);
     end
 end
-ylabel('Y (m)','FontSize',fontsize)
-xlabel('X (m)','FontSize',fontsize)
+ylabel('Y (m)','FontSize',12)
+xlabel('X (m)','FontSize',12)

@@ -20,6 +20,7 @@ New_C=zeros(I,J);
 utemp=[-U*cos(theta),U*cos(theta),U*sin(theta),-U*sin(theta),U*sin(theta-pi/4),-U*sin(theta-pi/4),...
     U*cos(theta-pi/4),-U*cos(theta-pi/4)];
 ud=(utemp+abs(utemp))/2;
+% ud=utemp;
 wc=parameter.wc;  % adjoint influence coefficient
 dispersion=parameter.dispersion;  % if dispersion is considered
 
