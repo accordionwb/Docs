@@ -22,15 +22,15 @@ clear
 % GENERAL FLOW CONSTANTS
 lx         = 250;
 ly         = 51;
-obst_x = lx/5+1;   % position of the cylinder; (exact
-obst_y = ly/2+1;   % y-symmetry is avoided)
+obst_x = lx/5+1;   % position of the cylinder;
+obst_y = ly/2+1;   % (exact y-symmetry is avoided)
 obst_r = ly/10+1;  % radius of the cylinder
 uMax  = 0.02;      % maximum velocity of Poiseuille inflow
 Re     = 100;      % Reynolds number
 nu    = uMax * 2.*obst_r / Re;   % kinematic viscosity
-omega  = 1. / (3*nu+1./2.);      % relaxation parameter
+omega  = 1. / (3*nu+1./2.);      % relaxation parameter  %?? 3D?
 maxT   = 400000;   % total number of iterations
-tPlot  = 5;        % cycles
+tPlot  = 10;        % cycles
 
 % D2Q9 LATTICE CONSTANTS
 t  = [4/9, 1/9,1/9,1/9,1/9, 1/36,1/36,1/36,1/36];
@@ -39,8 +39,8 @@ cy = [  0,   0,  1,  0, -1,    1,   1,  -1,  -1];
 opp = [ 1,   4,  5,  2,  3,    8,   9,   6,   7];
 col = 2:(ly-1);
 
-[y,x] = meshgrid(1:ly,1:lx);
-obst = (x-obst_x).^2 + (y-obst_y).^2 <= obst_r.^2;
+[Y,X] = meshgrid(1:ly,1:lx);
+obst = (X-obst_x).^2 + (Y-obst_y).^2 <= obst_r.^2;
 obst(:,[1,ly]) = 1;
 bbRegion = find(obst);
 
