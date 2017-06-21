@@ -20,16 +20,17 @@
 clear
 
 % GENERAL FLOW CONSTANTS
-lx         = 250;
-ly         = 15;
-obst_x = lx/5+1;   % position of the cylinder;
+lx         = 240;
+ly         = 120;
+obst_x = lx/3+1;   % position of the cylinder;
 obst_y = ly/3+1;   % (exact y-symmetry is avoided)
 obst_r = ly/10+1;  % radius of the cylinder
 uMax  = 0.02;      % maximum velocity of Poiseuille inflow
-Re     = 100;      % Reynolds number
-nu    = uMax * 2.*obst_r / Re;   % kinematic viscosity
+% Re     = 100;      % Reynolds number
+% nu    = uMax * 2.*obst_r / Re;   % kinematic viscosity
+nu=1.5E-5;
 omega  = 1. / (3*nu+1./2.);      % relaxation parameter  %?? 3D?
-maxT   = 400000;   % total number of iterations
+maxT   = 10000;   % total number of iterations
 tPlot  = 10;        % cycles
 
 % D2Q9 LATTICE CONSTANTS
@@ -103,9 +104,15 @@ for cycle = 1:maxT
 
     % VISUALIZATION
     if (mod(cycle,tPlot)==0)
-        u = reshape(sqrt(ux.^2+uy.^2),lx,ly);
-        u(bbRegion) = nan;
-        imagesc(u');
+        Ux = reshape(ux,lx,ly);
+        Uy = reshape(uy,lx,ly);
+        Ux(bbRegion) = nan;
+        Uy(bbRegion) = nan;
+%         u = reshape(sqrt(ux.^2+uy.^2),lx,ly);
+%         u(bbRegion) = nan;
+%         imagesc(u');
+        quiver(X,Y,Ux,Uy)
+        title(['Progress: ',num2str(100*cycle/maxT,'%5.2f'),'%, ',num2str(cycle),' / ',num2str(maxT)]);
         axis equal off; drawnow
     end
 end
