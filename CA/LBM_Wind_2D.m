@@ -21,7 +21,7 @@ clear
 
 % GENERAL FLOW CONSTANTS
 lx         = 250;
-ly         = 15;
+ly         = 151;
 obst_x = lx/5+1;   % position of the cylinder;
 obst_y = ly/3+1;   % (exact y-symmetry is avoided)
 obst_r = ly/10+1;  % radius of the cylinder
@@ -83,16 +83,17 @@ for cycle = 1:maxT
 
     % MICROSCOPIC BOUNDARY CONDITIONS
     for i=1:9
-         % Left boundary
+         % Left boundary (West)
          fOut(i,1,col) = fEq(i,1,col) + ...
            18*t(i)*cx(i)*cy(i)* ( fIn(8,1,col) - ...
            fIn(7,1,col)-fEq(8,1,col)+fEq(7,1,col) );
+
          % Right boundary
          fOut(i,lx,col) = fEq(i,lx,col) + ...
            18*t(i)*cx(i)*cy(i)* ( fIn(6,lx,col) - ...
            fIn(9,lx,col)-fEq(6,lx,col)+fEq(9,lx,col) );
          % Bounce back region
-         fOut(i,bbRegion) = fIn(opp(i),bbRegion);
+         fOut(i,bbRegion) = fIn(opp(i),bbRegion);  % opp as Rotation 
     end
 
     % STREAMING STEP
@@ -106,6 +107,7 @@ for cycle = 1:maxT
         u = reshape(sqrt(ux.^2+uy.^2),lx,ly);
         u(bbRegion) = nan;
         imagesc(u');
+        title(['iteration ',num2str(cycle),' / ',num2str(maxT)])
         axis equal off; drawnow
     end
 end
