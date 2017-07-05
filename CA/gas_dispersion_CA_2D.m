@@ -68,7 +68,7 @@ else
         C=New_C;
         
         
-        %%% Plot Contour
+        %%% Visualization
         
         if rem(step,100)==0
             drawnow

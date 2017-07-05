@@ -33,10 +33,10 @@ maxT   = 400000;   % total number of iterations
 tPlot  = 10;        % cycles
 
 % D2Q9 LATTICE CONSTANTS
-t  = [4/9, 1/9,1/9,1/9,1/9, 1/36,1/36,1/36,1/36];
-cx = [  0,   1,  0, -1,  0,    1,  -1,  -1,   1];
-cy = [  0,   0,  1,  0, -1,    1,   1,  -1,  -1];
-opp = [ 1,   4,  5,  2,  3,    8,   9,   6,   7];
+t  = [1/9,1/9,1/9,1/9, 1/36,1/36,1/36,1/36,  4/9];
+cx = [  1,  0, -1,  0,    1,  -1,  -1,   1,  0];
+cy = [  0,  1,  0, -1,    1,   1,  -1,  -1,  0];
+opp = [ 3,   4,  1,  2,   7,   8,   5,   6,  9];
 col = 2:(ly-1);
 
 [Y,X] = meshgrid(1:ly,1:lx);
@@ -47,7 +47,7 @@ bbRegion = find(obst);
 % INITIAL CONDITION: (rho=0, u=0) ==> fIn(i) = t(i)
 fIn = reshape( t' * ones(1,lx*ly), 9, lx, ly);
 
-% MAIN LOOP (TIME CYCLES)
+%% MAIN LOOP (TIME CYCLES)
 for cycle = 1:maxT
 
     % MACROSCOPIC VARIABLES
@@ -62,9 +62,10 @@ for cycle = 1:maxT
     L = ly-2; y = col-1.5;
     ux(:,1,col) = 4 * uMax / (L*L) * (y.*L-y.*y);
     uy(:,1,col) = 0;
+    
     rho(:,1,col) = 1 ./ (1-ux(:,1,col)) .* ( ...
-        sum(fIn([1,3,5],1,col)) + ...
-        2*sum(fIn([4,7,8],1,col)) );
+        sum(fIn([2,9,4],1,col)) + ...
+        2*sum(fIn([3,6,7],1,col)) );
       % Outlet: Zero gradient on rho/ux
     rho(:,lx,col) = rho(:,lx-1,col);
     uy(:,lx,col)  = 0;
@@ -85,13 +86,13 @@ for cycle = 1:maxT
     for i=1:9
          % Left boundary (West)
          fOut(i,1,col) = fEq(i,1,col) + ...
-           18*t(i)*cx(i)*cy(i)* ( fIn(8,1,col) - ...
-           fIn(7,1,col)-fEq(8,1,col)+fEq(7,1,col) );
+           18*t(i)*cx(i)*cy(i)* ( fIn(7,1,col) - ...
+           fIn(6,1,col)-fEq(7,1,col)+fEq(6,1,col) );
 
          % Right boundary
          fOut(i,lx,col) = fEq(i,lx,col) + ...
-           18*t(i)*cx(i)*cy(i)* ( fIn(6,lx,col) - ...
-           fIn(9,lx,col)-fEq(6,lx,col)+fEq(9,lx,col) );
+           18*t(i)*cx(i)*cy(i)* ( fIn(5,lx,col) - ...
+           fIn(8,lx,col)-fEq(5,lx,col)+fEq(8,lx,col) );
          % Bounce back region
          fOut(i,bbRegion) = fIn(opp(i),bbRegion);  % opp as Rotation 
     end
@@ -108,6 +109,8 @@ for cycle = 1:maxT
         u(bbRegion) = nan;
         imagesc(u');
         title(['iteration ',num2str(cycle),' / ',num2str(maxT)])
+        rectangle('Position',[obst_x-obst_r,obst_y-obst_r,2*obst_r,2*obst_r]...
+            ,'Curvature',[1,1],  'FaceColor','cyan')
         axis equal off; drawnow
     end
 end
