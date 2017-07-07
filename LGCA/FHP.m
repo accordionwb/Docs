@@ -9,7 +9,7 @@
 %
 % WRITTEN BY:  Anthony P. Austin, February 11, 2009
 
-function FHP
+function FHP(t_end)
 tic; % Time program exectution.
 
 % Number of nodes in each direction.  These must be multiples of 32
@@ -18,7 +18,7 @@ numnodes_x = 640;
 numnodes_y = 256;
 
 % Number of timesteps over which to simulate.
-t_end = 50;
+% t_end = 50;
 
 % 3D array of nodes to store the vectors that represent the occupied
 % cells at each node.
@@ -95,14 +95,14 @@ for i = 1:numnodes_x
             % %                 curr_cell(1) = 1;            % Put a particle in the cell flowing in the
             % rightward direction.
             
-            nodes(i, j, 1) = 1;  % Reinsert the cell into the array.
+%             nodes(i, j, 1) = 1;  % Reinsert the cell into the array.
         end
     end
 end
 
-% Carry out the simulation.
+%% Carry out the simulation.
 for t = 1:t_end
-    
+    nodes(1, :, 1) = true(numnodes_y,1);
     % Carry out collisions at non-boundary nodes.
     for i = 1:numnodes_x
         for j = 2:(numnodes_y - 1) % Don't include the top and bottom walls.
@@ -163,14 +163,14 @@ for t = 1:t_end
         end
     end
     % Carry out collisions along the top and bottom walls (no-slip).
-    for i = 1:1:numnodes_x
+    for i = 1:numnodes_x
         nodes(i, 1, :) = [nodes(i, 1, 4) nodes(i, 1, 5) nodes(i, 1, 6) nodes(i, 1, 1) nodes(i, 1, 2) nodes(i, 1, 3)];
         nodes(i, numnodes_y, :) = [nodes(i, numnodes_y, 4) nodes(i, numnodes_y, 5) nodes(i, numnodes_y, 6) nodes(i, numnodes_y, 1) nodes(i, numnodes_y, 2) nodes(i, numnodes_y, 3)];
     end
     
     % Carry out collisions at obstacle points (no-slip).
-    for i = 1:1:numnodes_x
-        for j = 1:1:numnodes_y
+    for i = 1:numnodes_x
+        for j = 1:numnodes_y
             if  obstacle(i, j) == 1
                 nodes(i, j, :) = [nodes(i, j, 4) nodes(i, j, 5) nodes(i, j, 6) nodes(i, j, 1) nodes(i, j, 2) nodes(i, j, 3)];
             end
@@ -181,7 +181,7 @@ for t = 1:t_end
     % lattice after propagation.
     n_nodes = zeros(numnodes_x, numnodes_y, 6);
     
-    % Iterate over all the nodes, propagating the particles as we go.
+    %% Iterate over all the nodes, propagating the particles as we go.
     for i = 1:1:numnodes_x
         for j = 1:1:numnodes_y
             % Get the occupancy state of the current node.
@@ -306,7 +306,7 @@ for t = 1:t_end
     %     end
     % End main loop
     
-    % Subdivide the total domain into subdomains of size 32x32 for the
+    %% Subdivide the total domain into subdomains of size 32x32 for the
     % purposes of coarse-graining.  See pg.  51.
     grain_size = 8;
     grain_x = numnodes_x / grain_size;
@@ -365,8 +365,8 @@ for t = 1:t_end
     plot([1; grain_x], [grain_y + 0.25; grain_y + .25], 'k-');
     
     % Display the flow obstacle.
-    obstacle_x = zeros(1, nnz(obstacle));
-    obstacle_y = zeros(1, nnz(obstacle));
+%     obstacle_x = zeros(1, nnz(obstacle));
+%     obstacle_y = zeros(1, nnz(obstacle));
     k = 1;
     
     for i = 1:numnodes_x
