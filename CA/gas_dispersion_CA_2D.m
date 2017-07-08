@@ -17,8 +17,8 @@ parameter.lambda=zeros(I,J);  % reaction
 % Adjoint coefficient
 parameter.wc=ones(2,1); % main weight cofficient wa, wb
 % Time and space division
-parameter.Dt=0.01;  % time step
-parameter.Dspace=0.1;  % space step
+parameter.Dt=0.1;  % time step
+parameter.Dspace=3;  % space step
 % control variables
 parameter.dispersion=0;  % 0 or 1
 % Initial and Source conditions
@@ -39,7 +39,7 @@ Y_length=Obstcfg(:,4)-Obstcfg(:,3);
 isOBST=0;
 %% Loop settings
 % Time and space step
-T=10; % time end. (start from t=0)
+T=100; % time end. (start from t=0)
 t=0;
 step=0;
 
