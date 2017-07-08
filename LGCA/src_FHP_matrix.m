@@ -28,7 +28,7 @@ Ncell = 6;
 % These must be multiples of 32 for the coarse graining to work.
 % Unit: 2^n for coarse graining
 % Ratio: M vs. N multipliers
-unit=5;
+unit=6;
 Ratio=[20,8];
 
 % Define fluid region, Logical values, 1 = fluid, 0 = obst/boundary
@@ -40,13 +40,13 @@ R_obstr=1/6;   % circle obst
 type = 1;  % 0 == plate ; 1 == circle
 
 % Number of timesteps over which to simulate.
-t_end = 1000;
+t_end = 100000;
 
 % plot results ?
 is_plot=false;
 
 % For results refinement
-grain_size=8;
+grain_size=16;
 t_plot=10;
 
 %% Execuate the program
