@@ -6,26 +6,33 @@ parameter.IJ=[I,J];  %x,y,z Demisions
 % wind direction based cofficient: | south | north | east | west | SE | NW | NE | SW
 parameter.U=3; %m/s wind speed
 parameter.theta=deg2rad(260); % degree, positive wind speed value point to center
+
 % Dispersion coefficient
 parameter.Kz=ones(2,1); % vertical turbulence coefficient kz', kz''
 parameter.Kx=1e-3;  % horizental dispersion coefficient on x axis
 parameter.Ky=1e-3;
 parameter.Kxy=1e-3;
+
 % Reaction and deposition
 parameter.delta=zeros(I,J);   % deposition
 parameter.lambda=zeros(I,J);  % reaction
+
 % Adjoint coefficient
 parameter.wc=ones(2,1); % main weight cofficient wa, wb
+
 % Time and space division
-parameter.Dt=0.01;  % time step
-parameter.Dspace=0.1;  % space step
+parameter.Dt=0.1;  % time step
+parameter.Dspace=1;  % space step
+
 % control variables
 parameter.dispersion=0;  % 0 or 1
+
 % Initial and Source conditions
 C=zeros(I,J); % Array initialization
 S=zeros(I,J);  % Source Character
 S(155:160,155:160)=10*ones(6,6);
 parameter.Source=S; %source 
+
 % Obstacle defination
 Obstcfg=[400,450,200,240;
          200,250,130,155];
@@ -39,7 +46,7 @@ Y_length=Obstcfg(:,4)-Obstcfg(:,3);
 isOBST=0;
 %% Loop settings
 % Time and space step
-T=10; % time end. (start from t=0)
+T=100; % time end. (start from t=0)
 t=0;
 step=0;
 
