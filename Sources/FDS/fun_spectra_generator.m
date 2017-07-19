@@ -38,7 +38,7 @@ function fun_spectra_generator(conf)
 %  |-- dump.
 %  |    |-- massfile   str   '.TRUE.'
 %  |
-%  |-- slif().
+%  |-- slcf().
 %  |    |-- surface     str    'PBX' | 'PBY' | 'PBZ'
 %  |    |-- PB          flt    1.0 | 2.0 | ...
 %  |    |-- quantity    str    'VOLUME FRACTION'
@@ -67,11 +67,11 @@ fid=fopen(filename,'w');
 
 %% Writing configure into FDS script
 
-% 1st entry &HEAD
+%% 1st entry &HEAD
 fprintf(fid,'&HEAD CHID = ''%s'', TITLE=''%s'' /\n',conf.head.chid, conf.head.title);
 fprintf(fid,'\n');
 
-% 2nd entry &MESH
+%% 2nd entry &MESH
 fprintf(fid,'%s\n','// Start mesh configuration');
 % meshXB(9).line='&MESH ID=''mesh00'',  IJK=215, 60, 50, XB=   0.0, 215.0,    -0.0, 60.0, 0.0, 50.0 /';  % core area
 % meshXB(1).line='&MESH ID=''mesh01'',  IJK=50, 50, 50, XB= -50.0, 0.0,  -50.0, 0.0, 0.0, 50.0 /';
@@ -99,21 +99,21 @@ end
 
 fprintf(fid,'\n');
 
-% 3rd entry & MISC
+%% 3rd entry & MISC
 fprintf(fid,'&MISC RESTART= %s / # It could be true \n',conf.misc.restart);
 fprintf(fid,'&MISC MEAN_FORCING(1:2)=.TRUE.,.TRUE., U0=%2.2f, V0=%2.2f, DT_MEAN_FORCING=0.1 / \n',...
     conf.misc.wind);
 fprintf(fid,'\n');
 
-% 4th entry &TIME
+%% 4th entry &TIME
 fprintf(fid,'&TIME T_END=%3.1f, /\n',conf.time);
 fprintf(fid,'\n');
 
-% 5th entry &SPEC
+%% 5th entry &SPEC
 fprintf(fid,'&SPEC ID=''%s'' /\n',conf.specid);
 fprintf(fid,'\n');
 
-% 6th entry rlse &SURF
+%% 6th entry rlse &SURF
 fprintf(fid,'&SURF ID=''%s'', SPEC_ID=''%s'', MASS_FLUX(1)=%2.4f, RAMP_MF(1)=''%s'' /\n', ...
     conf.rlse.surfid, conf.specid, conf.rlse.mass, conf.rlse.rampid);
 
@@ -127,7 +127,7 @@ fprintf(fid,'&VENT XB= %4.1f, %4.1f, %4.1f, %4.1f, %4.1f, %4.1f, SURF_ID=''%s'',
     conf.rlse.ventXB,conf.rlse.surfid,conf.rlse.color);
 fprintf(fid,'\n');
 
-% 7th entry wind &SURF
+%% 7th entry wind &SURF
 % fprintf(fid,'&SURF ID=''%s'', TMP_FRONT=%2.1f , VEL=%2.1f, VEL_T=%2.1f, %2.1f, PROFILE=''%s'', Z0=%2.1f, PLE=0.094, RAMP_V=''%s'' /\n', ...
 %     char(conf.wind.surfid(1)),conf.wind.temp, conf.wind.VX, conf.wind.profile, conf.wind.Z0, conf.wind.rampid);
 % fprintf(fid,'&SURF ID=''%s'', TMP_FRONT=%2.1f , VEL=%2.1f, VEL_T=%2.1f, %2.1f, PROFILE=''%s'', Z0=%2.1f, PLE=0.094, RAMP_V=''%s'' /\n', ...
@@ -144,28 +144,31 @@ for i=1:5   %conf.wind.vent is integer numbered  1|2|3
 end
 fprintf(fid,'\n');
 
-% 7th entry &DUMP
+%% 7th entry &DUMP
 fprintf(fid,'&DUMP MASS_FILE=%s  /\n',conf.dump.massfile);
-fprintf(fid,'&DUMP PLOT3D_SPEC_ID(5)=''%s'', PLOT3D_QUANTITY(1:5)=''TEMPERATURE'',''U-VELOCITY'',''V-VELOCITY'',''W-VELOCITY'',''%s'', DT_PL3D=%3.1f /\n', ...
-    conf.specid,conf.dump.pl3d_quantity,conf.dump.dt_pl3d);
+% fprintf(fid,'&DUMP PLOT3D_SPEC_ID(5)=''%s'', PLOT3D_QUANTITY(1:5)=''TEMPERATURE'',''U-VELOCITY'',''V-VELOCITY'',''W-VELOCITY'',''%s'', DT_PL3D=%3.1f /\n', ...
+%     conf.specid,conf.dump.pl3d_quantity,conf.dump.dt_pl3d);
 fprintf(fid,'\n');
 
-% 8th entry &ISOF
-fprintf(fid,'&ISOF SPEC_ID=''%s'', QUANTITY=''%s'', VALUE(1)=%2.2e, VALUE(2)=%2.2e, VALUE(3)=%2.2e   /\n',...
-    conf.specid, conf.isof.quantity, conf.isof.value);
-fprintf(fid,'\n');
+%% 8th entry &ISOF
+% fprintf(fid,'&ISOF SPEC_ID=''%s'', QUANTITY=''%s'', VALUE(1)=%2.2e, VALUE(2)=%2.2e, VALUE(3)=%2.2e   /\n',...
+%     conf.specid, conf.isof.quantity, conf.isof.value);
+% fprintf(fid,'\n');
 
 
-% 9th entry &SLCF 
-fprintf(fid,'%s\n','&SLCF PBZ=1.0, QUANTITY=''VELOCITY'', VECTOR=.TRUE. /');
+%% 9th entry &SLCF 
 fprintf(fid,'\n');
-for i=1:numel(conf.slif)
-    fprintf(fid,'&SLCF %s =%3.1f, QUANTITY=''%s'', SPEC_ID=''%s'' /\n',conf.slif(i).surface, conf.slif(i).PB,...
-        conf.slif(i).quantity, conf.specid);
+for i=1:numel(conf.slcf)
+fprintf(fid,'&SLCF %s =%3.1f, QUANTITY=''VELOCITY'', VECTOR=.TRUE. /\n', conf.slcf(i).surface, conf.slcf(i).PB);
+end
+fprintf(fid,'\n');
+for i=1:numel(conf.slcf)
+    fprintf(fid,'&SLCF %s =%3.1f, QUANTITY=''%s'', SPEC_ID=''%s'' /\n',conf.slcf(i).surface, conf.slcf(i).PB,...
+        conf.slcf(i).quantity, conf.specid);
 end
 fprintf(fid,'\n');
 
-% 10th entry: &DEVC
+%% 10th entry: &DEVC
 load(conf.devc.xyz_config)
 for i=1:numel(Devc_config)
     if conf.mesh(Devc_config(i).zone) ==1
@@ -175,7 +178,7 @@ for i=1:numel(Devc_config)
 end
 fprintf(fid,'\n');
 
-% 11th entry: &OBST
+%% 11th entry: &OBST
 
 % Writing Rectangle Data
 load(conf.obst.rec_config);
@@ -183,9 +186,16 @@ load(conf.obst.rec_config);
 % color1 ='''OLIVE DRAB''';
 fprintf(fid,'%s\n','/Starting writing rectangular OBST');
 N=size(Rec_Data,1);
+if dike_flag==1
 for i=1:N
     fprintf(fid,'&OBST XB=%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f, COLOR=''%s'', SURF_ID=''%s''  /\n',...
         Rec_Data(i,:),conf.obst.rec_color, conf.obst.rec_surfid);
+end
+elseif dike_flag==0
+    for i=1:10
+    fprintf(fid,'&OBST XB=%3.1f,%3.1f,%3.1f,%3.1f,%3.1f,%3.1f, COLOR=''%s'', SURF_ID=''%s''  /\n',...
+        Rec_Data(i,:),conf.obst.rec_color, conf.obst.rec_surfid);
+    end
 end
 fprintf(fid,'\n');
 
@@ -200,7 +210,7 @@ load(conf.obst.cyl_config);
 % end
 fprintf(fid,'\n');
 
-% Last entry: &TAIL
+%% Last entry: &TAIL
 fprintf(fid,'&TAIL /\n');
 
 fclose(fid);
