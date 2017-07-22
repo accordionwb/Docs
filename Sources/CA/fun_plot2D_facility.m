@@ -1,4 +1,4 @@
-function fun_plot2D_facility(con,time,dim,mycmap,chid,layer)
+function fun_plot2D_facility(con,time,dim,mycmap,chid,layer,arch)
 %% This script plot all domain OBST using matlab function
 % Basic function for the plot is rectangle
 % For circle: rectangle('Position',[Bottom_left_x,Bottom_left_y,Diameter_x,Diameter_y],'Curvature',[1,1],  'FaceColor','cyan')
@@ -7,8 +7,15 @@ function fun_plot2D_facility(con,time,dim,mycmap,chid,layer)
 
 % Add domain configuration file to path
 
-
+if strcmp(arch,'linux')
 addpath('/home/wangbing/SVN/Code/Matlab/FDS/Scenarios/Facility')
+outpath=['/home/wangbing/Videos/',chid];
+elseif strcmp(arch,'win')
+    addpath('C:\SVN/Code\Matlab\FDS\Scenarios\Facility')
+    outpath=['E:\Videos\',chid];
+elseif strcmp(arch,'mac')
+    
+end
 % addpath('~/fdscov')
 % fid='029';
 
@@ -19,7 +26,7 @@ end
 
 
 % open video file
-outpath=['/home/wangbing/Videos/',chid];
+
 if ~exist(outpath,'dir')
     mkdir(outpath)
 end
@@ -72,7 +79,7 @@ elseif dim==3
     vid=VideoWriter(fname);
     open(vid)
 else
-    error("Error input argument")
+    error('Error input argument')
 end
 
 % Make movie equivlent to each other by setting total time step compariable

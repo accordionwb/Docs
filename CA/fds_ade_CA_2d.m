@@ -7,15 +7,24 @@
 % Regular variable that should be kept in workspace
 clear
 clc
+arch='win'; % | 'linux', 'mac'
 fid='055';
-leak=[95,96,80,81];   % source location
-strength=0.1;  % source strength
+leak=[96,97,80,81];   % source location
+% leak=[299,300,80,81];   % source location
+strength=1;  % source strength
 lk_start=100;   % time to leak
-lk_end=300;     % time leak ends
-layer=2;        % z layer
+lk_end=200;     % time leak ends
+layer=1;        % z layer
 T_end=400;      % Total simulation time
 
+if strcmp(arch,'win') 
+    disp('Working on ''Windows'' platform')
+    addpath('D:/fdsmat')
+elseif strcmp(arch,'linux')
 addpath('~/fdscov')
+elseif strcmp(arch,'mac')
+    addpath('~/fdscov')
+end
 % chid=['Spectra_',fid];
 chid=['Facility_',fid];
 
@@ -52,7 +61,7 @@ pause(2)
 
 %% <optional@02>    Plot Original Chlorine Concentration 
 
-fun_plot2D_facility(CHLORINE_VOLUME_FRACTION,time,3,mycmap,chid,layer)
+fun_plot2D_facility(CHLORINE_VOLUME_FRACTION,time,3,mycmap,chid,layer,arch)
 
 %% #<Exec:02>#    Some statistics
 % time space analysis
@@ -91,7 +100,7 @@ i=1;j=1;
 time_q=0:Dt:T_end;
 ITq=length(time_q);
 
-textprogressbar('Interpolating : ');
+textprogressbar('Interpolating... : ');
 for i=IX:-1:1
     for j=IY:-1:1
         u_vel_temp=reshape(u_vel(i, j, layer, 1:IT),1,IT);
@@ -108,14 +117,16 @@ for i=IX:-1:1
         textprogressbar(round((IX-i)/IX*100));
     end
 end
-textprogressbar('  Done');
-
 time_for_interp=toc;   % about two minites
+textprogressbar([' Time Elapse: ',num2str(time_for_interp)]);
 
+if strcmp(arch,'linux')
 save(['~/fdscov/',chid,'_q.mat'],'time_q','u_vel_q','v_vel_q','vel_q',...
     'CHLORINE_VOLUME_FRACTION');
-
-
+elseif strcmp(arch,'win')
+save(['D:\fdsmat\',chid,'_q.mat'],'time_q','u_vel_q','v_vel_q','vel_q',...
+    'CHLORINE_VOLUME_FRACTION');
+end
 %% #<Spectial:01>#  Load saved interpolation data if exist
 %------------------------------
 %
@@ -123,15 +134,22 @@ save(['~/fdscov/',chid,'_q.mat'],'time_q','u_vel_q','v_vel_q','vel_q',...
 %
 % -----------------------------
 
-
-file_exist=system(['test -e ~/fdscov/',chid,'_q.mat']);
-if (file_exist == 0)
-    load(['~/fdscov/',chid,'_q.mat'])
-else
-    disp(['File ~/fdscov/',chid,'_q.mat not exist!'])
-    return
+if strcmp(arch, 'linux')    
+    file_exist=system(['test -e ~/fdscov/',chid,'_q.mat']);
+    if (file_exist == 2)
+        load(['~/fdscov/',chid,'_q.mat'])
+    else
+        disp(['File ~/fdscov/',chid,'_q.mat doesn''t exist!'])
+    end
+elseif strcmp(arch, 'win')
+    file_exist=exist(['D:\fdsmat\',chid,'_q.mat'],'file');
+    if (file_exist == 2)
+        load(['D:\fdsmat\',chid,'_q.mat'])
+    else
+        disp(['File D:\fdsmat\',chid,'_q.mat doesn''t exist!'])
+    end
 end
-[IX,IY,IT]=size(u_vel_q);
+[IX,IY,IZ,IT]=size(u_vel_q);
 Dspace=1.0;
 idum=randi(IT);
 Dt=time_q(idum)-time_q(idum-1);
@@ -155,7 +173,7 @@ while t<=T_end
     t=t+Dt;
     step=step+1;
     
-    %
+    % Extract one layer at time step from 3-D velocity field
     u_vel_t=reshape(u_vel_q(:,:,layer,step),IX,IY);
     v_vel_t=reshape(v_vel_q(:,:,layer,step),IX,IY);
     vel_t=reshape(vel_q(:,:,layer,step),IX,IY);
@@ -164,11 +182,9 @@ while t<=T_end
     
     C=New_C;
     
-    if t >= lk_start 
+    if t >= lk_start && t < lk_end
         Source(leak(1):leak(2),leak(3):leak(4))=strength;
-    end
-    
-    if t >= lk_end
+    else
         Source=zeros(IX,IY);
     end
     
@@ -180,20 +196,35 @@ end
 CA_loop_time=toc;
 textprogressbar(['Time Elapse: ',num2str(CA_loop_time),' s'])
 
-
- save(['~/fdscov/',chid,'_con.mat'],'con','time_q');
+% if strcmp(arch, 'linux')
+%  save(['~/fdscov/',chid,'_con.mat'],'con','time_q');
+% elseif strcmp(arch,'win')
+%     save(['D:\fdsmat\',chid,'_con.mat'],'con','time_q');
+% end
 
 %% #<Exec:06>#  Results visulization
 % -------------------------
 %   Go to initial to clear
 % ---------------------------
-
-load(['~/fdscov/',chid,'_con.mat'],'con','time_q');
+if strcmp(arch,'linux')
+   load(['~/fdscov/',chid,'_con.mat'],'con','time_q');
+elseif strcmp(arch,'win')
+    load(['D:\fdsmat\',chid,'_con.mat'],'con','time_q');
+end
      
 % Generate CA results 
-fun_plot2D_facility(con,time_q,2,mycmap,chid,layer)
+fun_plot2D_facility(con,time_q,2,mycmap,chid,layer,arch)
 
 
+%% Debug purpose
+iskp=100;
+k=0;
+seqns=1:iskp:size(con,3);
+for i=seqns
+    k=k+1;
+    CMax(k)=max(max(con(:,:,i)));
+end
+plot(time_q(seqns),CMax)
 
 
 
