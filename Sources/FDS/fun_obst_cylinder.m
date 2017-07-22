@@ -154,8 +154,8 @@ for k=1:N  % Begin Data Set
         
         cntr=cntr+1;
     end
-    disp('');
-    disp(['Cylinder ',num2str(index,'%02d'),'/',num2str(N,'%02d'),' Complete!']);
+%     disp('');
+%     disp(['Cylinder ',num2str(index,'%02d'),'/',num2str(N,'%02d'),' Complete!']);
     fprintf(fid,'\n');
 end
 % fclose(fid);

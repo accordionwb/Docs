@@ -37,13 +37,13 @@ clear U_e_tp U_n_tp U_w_tp U_s_tp U_ne_tp U_nw_tp U_se_tp U_sw_tp
 wa=1;
 wb=1;
 
-% dispersion_flag=0;   % 0 -> no dispersion
+diffusion_flag=0;   % 0 -> no dispersion
 
 % dispersion coefficient
 
-% Kx=1e-5;  % horizental dispersion coefficient on x axis
-% Ky=1e-5;
-% Kxy=1e-5;
+Kx=1e-5;  % horizental dispersion coefficient on x axis
+Ky=1e-5;
+Kxy=1e-5;
 
 % deposition and reaction
 % delta=zeros(IX,IY);   % deposition
@@ -61,7 +61,7 @@ wb=1;
 %   i-1,j-1   i,j-1     i+1,j-1
 
 %% Function body
-% if dispersion_flag == 0
+if diffusion_flag == 0
 % Local update in main body
 New_C(ii,jj)=C(ii,jj)+...
     wa*Dt/Dspace*(...
@@ -156,3 +156,15 @@ New_C(IX,1)=C(IX,1)+...
     wb*Dt/Dspace/sqrt(2)*( ...
     U_nw(IX,1).*(C(IX-1,2)-C(IX,1))  )+...
     Source(IX,1)*Dt;
+
+
+%% Diffusion considered
+elseif diffusion_flag == 1
+    
+    
+    
+    
+    
+end
+
+
