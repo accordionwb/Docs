@@ -8,8 +8,8 @@ function fun_plot2D_facility(con,time,dim,mycmap,chid,layer,arch)
 % Add domain configuration file to path
 
 if strcmp(arch,'linux')
-addpath('/home/wangbing/SVN/Code/Matlab/FDS/Scenarios/Facility')
-outpath=['/home/wangbing/Videos/',chid];
+    addpath('/home/wangbing/SVN/Code/Matlab/FDS/Scenarios/Facility')
+    outpath=['/home/wangbing/Videos/',chid];
 elseif strcmp(arch,'win')
     addpath('C:\SVN/Code\Matlab\FDS\Scenarios\Facility')
     outpath=['E:\Videos\',chid];
@@ -72,7 +72,7 @@ if dim==2
     open(vid)
 elseif dim==3
     [D1,D2,D3,D4]=size(con);
- 
+    
     data_tmp=con(:,:,layer,:);
     data=reshape(data_tmp,D1,D2,D4);
     fname=[outpath,'/',chid,'.avi'];
@@ -102,8 +102,13 @@ for k=1:IT-1
         skip_length=skp_tmp;
     end
     
-
+    
     if  k==1 || skip_count>=skip_length
+        
+        imagesc(X_cor,Y_cor,data(:,:,k)');
+        ax=gca;
+        colormap(ax,mycmap)        
+        colorbar
         
         if outer_flag==0
             axis([0 215 0 60])
@@ -117,11 +122,7 @@ for k=1:IT-1
             set(gca,'YTick',Y_cor(1):10:Y_cor(2))
         end
         
-        imagesc(X_cor,Y_cor,data(:,:,k)');
-        ax=gca;
-        colormap(ax,mycmap)
         
-        colorbar
         
         caxis([0,0.005])
         title(['Time elapse: ',num2str(round(time(k))),' s'])
@@ -164,7 +165,7 @@ for k=1:IT-1
         hold off
         
         % reset skip_count
-
+        
         skip_count=0;
         
         

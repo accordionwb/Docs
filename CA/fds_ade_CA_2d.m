@@ -7,9 +7,9 @@
 % Regular variable that should be kept in workspace
 clear
 clc
-arch='win'; % | 'linux', 'mac'
-fid='055';
-leak=[96,97,80,81];   % source location
+arch='linux'; % | 'linux', 'mac', 'win'
+fid='111';
+leak=[158,159,85,86];   % source location
 % leak=[299,300,80,81];   % source location
 strength=1;  % source strength
 lk_start=100;   % time to leak
@@ -19,9 +19,11 @@ T_end=400;      % Total simulation time
 
 if strcmp(arch,'win') 
     disp('Working on ''Windows'' platform')
-    addpath('D:/fdsmat')
+    workpath='D:\fdsmat\';   % Must end with '\'
+    addpath(workpath)
 elseif strcmp(arch,'linux')
-addpath('~/fdscov')
+workpath='/disk/fdsmat/';    % Must end with '/'
+addpath(workpath)
 elseif strcmp(arch,'mac')
     addpath('~/fdscov')
 end
@@ -121,10 +123,10 @@ time_for_interp=toc;   % about two minites
 textprogressbar([' Time Elapse: ',num2str(time_for_interp)]);
 
 if strcmp(arch,'linux')
-save(['~/fdscov/',chid,'_q.mat'],'time_q','u_vel_q','v_vel_q','vel_q',...
+save([workpath,chid,'_q.mat'],'time_q','u_vel_q','v_vel_q','vel_q',...
     'CHLORINE_VOLUME_FRACTION');
 elseif strcmp(arch,'win')
-save(['D:\fdsmat\',chid,'_q.mat'],'time_q','u_vel_q','v_vel_q','vel_q',...
+save([workpath,chid,'_q.mat'],'time_q','u_vel_q','v_vel_q','vel_q',...
     'CHLORINE_VOLUME_FRACTION');
 end
 %% #<Spectial:01>#  Load saved interpolation data if exist
@@ -135,18 +137,18 @@ end
 % -----------------------------
 
 if strcmp(arch, 'linux')    
-    file_exist=system(['test -e ~/fdscov/',chid,'_q.mat']);
+    file_exist=exist([workpath,chid,'_q.mat'],'file');
     if (file_exist == 2)
-        load(['~/fdscov/',chid,'_q.mat'])
+        load([workpath,chid,'_q.mat'])
     else
-        disp(['File ~/fdscov/',chid,'_q.mat doesn''t exist!'])
+        disp(['File ',workpath,chid,'_q.mat doesn''t exist!'])
     end
 elseif strcmp(arch, 'win')
-    file_exist=exist(['D:\fdsmat\',chid,'_q.mat'],'file');
+    file_exist=exist([workpath,chid,'_q.mat'],'file');
     if (file_exist == 2)
-        load(['D:\fdsmat\',chid,'_q.mat'])
+        load([workpath,chid,'_q.mat'])
     else
-        disp(['File D:\fdsmat\',chid,'_q.mat doesn''t exist!'])
+        disp(['File ',workpath,chid,'_q.mat doesn''t exist!'])
     end
 end
 [IX,IY,IZ,IT]=size(u_vel_q);
@@ -196,20 +198,20 @@ end
 CA_loop_time=toc;
 textprogressbar(['Time Elapse: ',num2str(CA_loop_time),' s'])
 
-% if strcmp(arch, 'linux')
-%  save(['~/fdscov/',chid,'_con.mat'],'con','time_q');
-% elseif strcmp(arch,'win')
-%     save(['D:\fdsmat\',chid,'_con.mat'],'con','time_q');
-% end
+if strcmp(arch, 'linux')
+ save([workpath,chid,'_con.mat'],'con','time_q');
+elseif strcmp(arch,'win')
+    save([workpath,chid,'_con.mat'],'con','time_q');
+end
 
 %% #<Exec:06>#  Results visulization
 % -------------------------
 %   Go to initial to clear
 % ---------------------------
 if strcmp(arch,'linux')
-   load(['~/fdscov/',chid,'_con.mat'],'con','time_q');
+   load([workpath,chid,'_con.mat'],'con','time_q');
 elseif strcmp(arch,'win')
-    load(['D:\fdsmat\',chid,'_con.mat'],'con','time_q');
+    load([workpath,chid,'_con.mat'],'con','time_q');
 end
      
 % Generate CA results 
