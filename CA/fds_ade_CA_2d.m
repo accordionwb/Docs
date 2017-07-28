@@ -19,11 +19,11 @@ T_end=400;      % Total simulation time
 
 if strcmp(arch,'win') 
     disp('Working on ''Windows'' platform')
-    workpath='D:\fdsmat\';   % Must end with '\'
-    addpath(workpath)
+    matpath='D:\fdsmat\';   % Must end with '\'
+    addpath(matpath)
 elseif strcmp(arch,'linux')
-workpath='/disk/fdsmat/';    % Must end with '/'
-addpath(workpath)
+matpath='/disk/fdsmat/';    % Must end with '/'
+addpath(matpath)
 elseif strcmp(arch,'mac')
     addpath('~/fdscov')
 end
@@ -123,10 +123,10 @@ time_for_interp=toc;   % about two minites
 textprogressbar([' Time Elapse: ',num2str(time_for_interp)]);
 
 if strcmp(arch,'linux')
-save([workpath,chid,'_q.mat'],'time_q','u_vel_q','v_vel_q','vel_q',...
+save([matpath,chid,'_q.mat'],'time_q','u_vel_q','v_vel_q','vel_q',...
     'CHLORINE_VOLUME_FRACTION');
 elseif strcmp(arch,'win')
-save([workpath,chid,'_q.mat'],'time_q','u_vel_q','v_vel_q','vel_q',...
+save([matpath,chid,'_q.mat'],'time_q','u_vel_q','v_vel_q','vel_q',...
     'CHLORINE_VOLUME_FRACTION');
 end
 %% #<Spectial:01>#  Load saved interpolation data if exist
@@ -137,18 +137,18 @@ end
 % -----------------------------
 
 if strcmp(arch, 'linux')    
-    file_exist=exist([workpath,chid,'_q.mat'],'file');
+    file_exist=exist([matpath,chid,'_q.mat'],'file');
     if (file_exist == 2)
-        load([workpath,chid,'_q.mat'])
+        load([matpath,chid,'_q.mat'])
     else
-        disp(['File ',workpath,chid,'_q.mat doesn''t exist!'])
+        disp(['File ',matpath,chid,'_q.mat doesn''t exist!'])
     end
 elseif strcmp(arch, 'win')
-    file_exist=exist([workpath,chid,'_q.mat'],'file');
+    file_exist=exist([matpath,chid,'_q.mat'],'file');
     if (file_exist == 2)
-        load([workpath,chid,'_q.mat'])
+        load([matpath,chid,'_q.mat'])
     else
-        disp(['File ',workpath,chid,'_q.mat doesn''t exist!'])
+        disp(['File ',matpath,chid,'_q.mat doesn''t exist!'])
     end
 end
 [IX,IY,IZ,IT]=size(u_vel_q);
@@ -199,9 +199,9 @@ CA_loop_time=toc;
 textprogressbar(['Time Elapse: ',num2str(CA_loop_time),' s'])
 
 if strcmp(arch, 'linux')
- save([workpath,chid,'_con.mat'],'con','time_q');
+ save([matpath,chid,'_con.mat'],'con','time_q');
 elseif strcmp(arch,'win')
-    save([workpath,chid,'_con.mat'],'con','time_q');
+    save([matpath,chid,'_con.mat'],'con','time_q');
 end
 
 %% #<Exec:06>#  Results visulization
@@ -209,9 +209,9 @@ end
 %   Go to initial to clear
 % ---------------------------
 if strcmp(arch,'linux')
-   load([workpath,chid,'_con.mat'],'con','time_q');
+   load([matpath,chid,'_con.mat'],'con','time_q');
 elseif strcmp(arch,'win')
-    load([workpath,chid,'_con.mat'],'con','time_q');
+    load([matpath,chid,'_con.mat'],'con','time_q');
 end
      
 % Generate CA results 

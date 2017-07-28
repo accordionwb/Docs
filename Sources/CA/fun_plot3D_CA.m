@@ -1,4 +1,4 @@
-function fun_plot2D_facility(con,time,dim,mycmap,chid,layer,arch)
+function fun_plot3D_CA(mf,mycmap,chid,layer,arch)
 %% This script plot all domain OBST using matlab function
 % Basic function for the plot is rectangle
 % For circle: rectangle('Position',[Bottom_left_x,Bottom_left_y,Diameter_x,Diameter_y],'Curvature',[1,1],  'FaceColor','cyan')
@@ -16,26 +16,26 @@ elseif strcmp(arch,'win')
 elseif strcmp(arch,'mac')
     
 end
-% addpath('~/fdscov')
-% fid='029';
+
 
 if ~exist('Rec_Data','var')
     load('MAT_Rec_config.mat');
     load('MAT_Cylinder_config.mat');
 end
 
-
 % open video file
-
+fname=[outpath,'/',chid,'_CA.avi'];
 if ~exist(outpath,'dir')
     mkdir(outpath)
 end
+vid=VideoWriter(fname);
+open(vid)
 
-Tdefault=1000;
+% Default time steps from FDS
+Tdefault=1000;   
 
-% if ~exist('con','var')
-%     load(['~/fdscov/Spectra_',fid,'_con.mat'],'con');
-% end
+% Load interpolated time
+time=mf.time_q;
 
 %% Adjustable Control variables
 dike_flag=0;  % 0 -> no dike, 1 -> dike on
@@ -64,23 +64,6 @@ XC=Data(:,3);
 YC=Data(:,4);
 RO=Data(:,7);
 
-% Check input
-if dim==2
-    data=con;
-    fname=[outpath,'/',chid,'_CA.avi'];
-    vid=VideoWriter(fname);
-    open(vid)
-elseif dim==3
-    [D1,D2,D3,D4]=size(con);
-    
-    data_tmp=con(:,:,layer,:);
-    data=reshape(data_tmp,D1,D2,D4);
-    fname=[outpath,'/',chid,'.avi'];
-    vid=VideoWriter(fname);
-    open(vid)
-else
-    error('Error input argument')
-end
 
 % Make movie equivlent to each other by setting total time step compariable
 if IT> 1.1*Tdefault
@@ -105,7 +88,7 @@ for k=1:IT-1
     
     if  k==1 || skip_count>=skip_length
         
-        imagesc(X_cor,Y_cor,data(:,:,k)');
+        imagesc(X_cor,Y_cor,mf.con(:,:,layer,k)');
         ax=gca;
         colormap(ax,mycmap)        
         colorbar

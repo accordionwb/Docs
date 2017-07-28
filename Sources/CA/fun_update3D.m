@@ -43,7 +43,7 @@ clear U_e_tp U_n_tp U_w_tp U_s_tp U_ne_tp U_nw_tp U_se_tp U_sw_tp
 wa=0.8;
 wb=0.5;
 
-diffusion_flag=1;   % 0 -> no dispersion
+diffusion_flag=0;   % 0 -> no dispersion
 
 % dispersion coefficient
 
@@ -513,5 +513,7 @@ New_C(IX,1,IZ)=C(IX,1,IZ)+...
     
     
 end
+
+
 
 
