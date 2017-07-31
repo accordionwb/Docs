@@ -35,7 +35,7 @@ elseif ~isempty(strCR) && ischar(c)
     fprintf([c '\n']);
 elseif isnumeric(c)
     % Progress bar - normal progress
-    c = floor(c);
+    c = floor(c*10)/10;
     percentageOut = [num2str(c) '%%'];
     percentageOut = [percentageOut repmat(' ',1,strPercentageLength-length(percentageOut)-1)];
     nDots = floor(c/100*strDotsMaximum);
