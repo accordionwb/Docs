@@ -17,8 +17,8 @@ function textprogressbar(c)
 persistent strCR;           %   Carriage return pesistent variable
 
 % Vizualization parameters
-strPercentageLength = 8;   %   Length of percentage string (must be >5)
-strDotsMaximum      = 30;   %   The total number of dots in a progress bar
+strPercentageLength = 10;   %   Length of percentage string (must be >5)
+strDotsMaximum      = 40;   %   The total number of dots in a progress bar
 
 %% Main 
 
@@ -33,9 +33,10 @@ elseif ~isempty(strCR) && ischar(c)
     % Progress bar  - termination
     strCR = [];  
     fprintf([c '\n']);
+    fprintf('\n');
 elseif isnumeric(c)
     % Progress bar - normal progress
-    c = floor(c*10)/10;
+    c = floor(c*100)/100;
     percentageOut = [num2str(c) '%%'];
     percentageOut = [percentageOut repmat(' ',1,strPercentageLength-length(percentageOut)-1)];
     nDots = floor(c/100*strDotsMaximum);
